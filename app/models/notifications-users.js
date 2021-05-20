@@ -6,10 +6,10 @@ var Schema = mongoose.Schema;
 // module.exports
 
 module.exports = mongoose.model('Notifications-User', new Schema({
- Title: String,
+ title: String,
  description: String,
  date: {type:Date,default:new Date()},
- is_unread: {type:Boolean, default:false},
+ is_unread: {type:Boolean, default:true},
  owner: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User'

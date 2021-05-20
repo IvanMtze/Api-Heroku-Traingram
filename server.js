@@ -153,6 +153,7 @@ apiRoutes.post('/login', function (req, res) {
 				// return the information including token as JSON
 
 				res.json({
+                    user_id : id,
 					success : true,
 					message : 'Enjoy your token !',
 					token : token
@@ -171,7 +172,7 @@ apiRoutes.use(function (req, res, next) {
     res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,contenttype'); // If needed
     //res.setHeader('Access-Control-Allow-Credentials', true); // If needed
 
-
+    var body = req.body;
 	var token = req.body.token ||
 	 			req.query.token ||
                 req.headers['Authorization'] ||
@@ -191,6 +192,7 @@ apiRoutes.use(function (req, res, next) {
 						return;
 					}
 					req.user = obj;
+                    req.body = body;
 					next();
 				});
 			}
@@ -209,25 +211,33 @@ apiRoutes.use(function (req, res, next) {
 //Endpoints
 //Notifications
 apiRoutes.get('/notifications', function(req, res){
-	NotificationsUser.find({owner : req.user._id,is_unread:true}, function(error, notifications){
+	NotificationsUser.find({owner : req.user._id}, function(error, notifications){
 		res.json(responseFormater(true, {notifications:notifications}));
 	});
 });
-apiRoutes.get('/notification/unread', function(req, res){
-	NotificationsUser.find({owner : req.user._id}, function(error, notifications){
+apiRoutes.get('/notifications/unread', function(req, res){
+	NotificationsUser.find({owner : req.user._id,is_unread:true}, function(error, notifications){
 		res.json(responseFormater(true, {notifications:notifications}));
 	});
 });
 
 apiRoutes.post('/notifications', function(req, res){
-	NotificationsUser.create({owner : req.user._id}, function(error, notifications){
+
+	var title = req.body.title;
+    console.log(title)
+	var description = req.body.description;
+	if(title == undefined || description == undefined){
+		res.json(responseFormater(false, {}, "name and desc are required"));
+	}
+	else{NotificationsUser.create({owner : req.user._id,'title':title,'description':description}, function(error, notifications){
 		res.json(responseFormater(true, {notifications:notifications}));
 	});
+}
 });
 
 apiRoutes.post('/notifications/readAll', function(req, res){
-	NotificationsUser.updateMany({owner : req.user._id,is_unread:false}, function(error, notifications){
-		res.json(responseFormater(false, {}, "Updated ok"));
+	NotificationsUser.updateMany({owner : req.user._id},{is_unread:false}, function(error, notifications){
+		res.json(responseFormater(true, {}, "Updated ok"));
 	});
 });
 
@@ -236,7 +246,7 @@ apiRoutes.put('/notifications', function(req, res){
 	var description = req.body.description;
 
 	if(title == undefined || description == undefined){
-		res.json(responseFormater(false, {}, "name and desc are required"));
+		res.json(responseFormater(true, {}, "name and desc are required"));
 	}
 	else{
 NotificationsUser.findByIdAndUpdate(id, req.body, { useFindAndModify: false })
