@@ -225,7 +225,7 @@ apiRoutes.post('/notifications', function(req, res){
 
 	var title = req.body.title;
 	var description = req.body.description;
-	User.findOne({name: req.user_id.toLowerCase()}, function (err, user){
+	User.findOne({name: req.body.user_id.toLowerCase()}, function (err, user){
 	    if (err) throw err;
 
 	    if (!user) {
