@@ -57,7 +57,7 @@ app.get('/setup', function (req, res) {
 	var nick = new User({
 		name : 'adsoft',
 		password: 'qubit',
-		admin: true
+		isAdmin: true
 	});
 
 	nick.save(function(err) {
@@ -224,14 +224,27 @@ apiRoutes.get('/notifications/unread', function(req, res){
 apiRoutes.post('/notifications', function(req, res){
 
 	var title = req.body.title;
-    console.log(title)
 	var description = req.body.description;
+	User.findOne({name: req.user_id.toLowerCase()}, function (err, user)
+	{
+		if (err) throw err;
+
+		if (!user) {
+			res.json({success: false, message:
+				'User not found'});
+		}
+		else if (user) {
 	if(title == undefined || description == undefined){
 		res.json(responseFormater(false, {}, "name and desc are required"));
 	}
-	else{NotificationsUser.create({owner : req.user._id,'title':title,'description':description}, function(error, notifications){
+
+	else{NotificationsUser.create({owner : user._id,'title':title,'description':description}, function(error, notifications){
 		res.json(responseFormater(true, {notifications:notifications}));
 	});
+
+		}
+	});
+
 }
 });
 
@@ -249,6 +262,8 @@ apiRoutes.put('/notifications', function(req, res){
 		res.json(responseFormater(true, {}, "name and desc are required"));
 	}
 	else{
+
+
 NotificationsUser.findByIdAndUpdate(id, req.body, { useFindAndModify: false })
     .then(data => {
       if (!data) {

@@ -8,4 +8,5 @@ var Schema = mongoose.Schema;
 module.exports = mongoose.model('User', new Schema({
  name: String,
  password: String,
+ isAdmin: {type:Boolean, default:false}
 }));
