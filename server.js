@@ -55,8 +55,8 @@ app.use(morgan('dev'));
 app.get('/setup', function (req, res) {
 	// create a sample user
 	var nick = new User({
-		name : 'adsoft',
-		password: 'qubit',
+		name : 'master',
+		password: 'mastermaster',
 		isAdmin: true
 	});
 
@@ -291,7 +291,7 @@ apiRoutes.delete('/notifications', function(req, res){
 		NotificationsUser.findByIdAndRemove(id).then(data=>{
 
 			if (!data) {
-        res.status(404).send({
+        res.status(404).send({emboscada a estatales
           message: `Cannot delete notification with id=${id}. Maybe notification was not found!`
         });
       } else {
