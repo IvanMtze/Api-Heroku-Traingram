@@ -1,4 +1,4 @@
 module.exports = {
 	'secret': 'i-love-adsoft',
-	'database': 'mongodb://35.232.232.192:27017/instagram-gerardo'
+	'database': 'mongodb+srv://mongodb:adminpassword@cluster0.svpa7.mongodb.net/notificationsdb?retryWrites=true&w=majority'
 }
